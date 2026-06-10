@@ -2,19 +2,20 @@ import requests
 import json
 
 def emotion_detector(text_to_analyze):
-   
+    # Endpoint and headers for the Watson NLP service
+    url = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'
     headers = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"}
     myobj = { "raw_document": { "text": text_to_analyze } }
     
-   
+    # Sending the post request
     response = requests.post(url, json=myobj, headers=headers)
     
-    
+    # Check if the request was successful
     if response.status_code == 200:
-       
+        # Convert the response text into a dictionary
         formatted_response = json.loads(response.text)
         
-       
+        # Extract the emotions dictionary containing the scores
         emotions = formatted_response['emotionPredictions'][0]['emotion']
         
         anger_score = emotions['anger']
@@ -23,10 +24,10 @@ def emotion_detector(text_to_analyze):
         joy_score = emotions['joy']
         sadness_score = emotions['sadness']
         
-        
+        # Calculate the dominant emotion
         dominant_emotion = max(emotions, key=emotions.get)
         
-       
+        # Return the required format dictionary
         return {
             'anger': anger_score,
             'disgust': disgust_score,
